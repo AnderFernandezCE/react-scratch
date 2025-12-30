@@ -4,10 +4,10 @@ const root = ReactDOM.createRoot(document.getElementById("app")!);
 
 const element = ReactScratch.createElement(
   "h1",
-  { id: "foo" },
+  { id: "foo", style:"background: salmon" },
   "Text content",
-  ReactScratch.createElement("br", null),
-  ReactScratch.createElement("a", null, "LINK")
+  ReactScratch.createElement("br"),
+  ReactScratch.createElement("a", {style: "color: red"}, "LINK")
 );
 
 // const element = (

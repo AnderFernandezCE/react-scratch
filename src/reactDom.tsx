@@ -1,4 +1,4 @@
-import type { EndNode, NodeElement } from "./types";
+import type { NodeElement } from "./types";
 
 interface ReactDOMInterface {
   createRoot: (root: HTMLElement) => ReactRenderer;
@@ -8,6 +8,25 @@ interface ReactRenderer {
   render: (elem: NodeElement) => void;
 }
 
+function setDomProperty(prop: string, elem: HTMLElement, value: unknown) {
+  if (prop.startsWith("on")) return;
+  if (prop === "children") return;
+
+  if (prop in elem) {
+    const proto = Object.getPrototypeOf(elem);
+    const desc =
+      Object.getOwnPropertyDescriptor(elem, prop) ??
+      Object.getOwnPropertyDescriptor(proto, prop);
+    const canWrite = !desc || desc.writable || typeof desc.set === "function";
+    if (canWrite) {
+      (elem as any)[prop] = value;
+    }
+    return
+  }
+  // not property, treat as HTML attribute;
+  elem.setAttribute(prop, String(value));
+}
+
 // function that renders node Elements in a container
 export function render(element: NodeElement, container: HTMLElement) {
   const isEndNode = element.type === "TEXT_NODE";
@@ -15,25 +34,21 @@ export function render(element: NodeElement, container: HTMLElement) {
     ? document.createTextNode("")
     : document.createElement(element.type);
 
-  console.log(element);
+  const isProperty = (property: string) => property !== "children";
 
-  isEndNode
-    ? (dom["nodeValue"] = (element as EndNode).props.nodeValue as string)
-    : element.props.children.forEach((child: NodeElement) =>
-        render(child, dom as HTMLElement)
-      );
+  Object.keys(element.props)
+    .filter(isProperty)
+    .forEach((name) => {
+      setDomProperty(name, dom as HTMLElement, element.props[name])
+        // dom[name] = element.props[name];
+    });
+
+  element.props.children.forEach((child: NodeElement) =>
+    render(child, dom as HTMLElement)
+  );
 
   container.appendChild(dom);
 }
-// element represents this html tag
-// <h1 title="h1 title">h1 content</h1>
-// const element: NodeElement = {
-//   type: "h1",
-//   props: {
-//     title: "h1 title",
-//     children: "h1 content",
-//   },
-// };
 
 const ReactDOM: ReactDOMInterface = {
   createRoot: (root: HTMLElement) => {

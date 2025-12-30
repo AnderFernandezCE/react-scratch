@@ -1,16 +1,24 @@
-import type { Child, ElementTypes, EndNode, EndNodeTypes, NodeElement } from "./types";
+import type {
+  Child,
+  ElementTypes,
+  EndNode,
+  EndNodeTypes,
+  NodeElement,
+} from "./types";
 
 // FUNCTION TO CREATE NODE ELEMENTS FROM JSX
 export function createElement(
   type: ElementTypes,
-  props: any,
-  ...children: Child[] 
+  props?: Record<string, any> | null | undefined,
+  ...children: Child[]
 ): NodeElement {
   return {
     type: type,
     props: {
       ...props,
-      children: children.map((child) => typeof child === "object" ? child : createNodeElement(child)),
+      children: children.map((child) =>
+        typeof child === "object" ? child as NodeElement : createNodeElement(child)
+      ),
     },
   };
 }
@@ -21,7 +29,7 @@ function createNodeElement(childNode: EndNodeTypes): EndNode {
     type: "TEXT_NODE",
     props: {
       nodeValue: childNode,
-      children: []
-    }
-  }
+      children: [],
+    },
+  };
 }
