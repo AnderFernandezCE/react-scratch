@@ -1,24 +1,3 @@
-export interface NodeElement {
-  $$typeof: Symbol,
-  type: ElementTypes;
-  props: {
-    children: (NodeElement | EndNode)[];
-    [key: string]: any;
-  };
-}
-
-export type EndNodeTypes = string | number | boolean | null | undefined;
-export type EndNode = {
-  $$typeof: Symbol,
-  type: "TEXT_NODE",
-  props: {
-    [key: string]: any;
-    nodeValue: EndNodeTypes;
-    children: []
-  }
-}
-export type Child = NodeElement | EndNodeTypes;
-
 type HeadingTypes = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 type TextTypes = "p" | "span" | "strong" | "em"
 

@@ -1,4 +1,4 @@
-import type { NodeElement } from "./types";
+import type { NodeElement } from "./types/ReactTypes";
 
 interface ReactDOMInterface {
   createRoot: (root: HTMLElement) => ReactRenderer;
@@ -21,7 +21,7 @@ function setDomProperty(prop: string, elem: HTMLElement, value: unknown) {
     if (canWrite) {
       (elem as any)[prop] = value;
     }
-    return
+    return;
   }
   // not property, treat as HTML attribute;
   elem.setAttribute(prop, String(value));
@@ -34,14 +34,31 @@ export function render(element: NodeElement, container: HTMLElement) {
     ? document.createTextNode("")
     : document.createElement(element.type);
 
-  const isProperty = (property: string) => property !== "children";
+  const isProperty = (property: string) =>
+    property !== "children" && property !== "style";
 
   Object.keys(element.props)
     .filter(isProperty)
     .forEach((name) => {
-      setDomProperty(name, dom as HTMLElement, element.props[name])
-        // dom[name] = element.props[name];
+      setDomProperty(name, dom as HTMLElement, element.props[name]);
+      // dom[name] = element.props[name];
     });
+
+  const hasStyles = "style" in element.props;
+  if (hasStyles) {
+    const propsStyles = element.props["style"];
+    // inline styles
+    if (typeof propsStyles === "string") {
+      (dom as HTMLElement).style.cssText = propsStyles;
+    }
+    // object styles
+    if (typeof propsStyles === "object") {
+      for (const [key, value] of Object.entries(propsStyles)) {
+        if (value == null || value == undefined) continue;
+        ((dom as HTMLElement).style as any)[key]  = value;
+      }
+    }
+  }
 
   element.props.children.forEach((child: NodeElement) =>
     render(child, dom as HTMLElement)

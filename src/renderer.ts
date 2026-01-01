@@ -1,10 +1,11 @@
+import type { ElementTypes } from "./types/HtmlTypes";
+import { REACT_ELEMENT_SYMBOL } from "./types/ReactSymbols";
 import type {
   Child,
-  ElementTypes,
   EndNode,
   EndNodeTypes,
   NodeElement,
-} from "./types";
+} from "./types/ReactTypes";
 
 // FUNCTION TO CREATE NODE ELEMENTS FROM JSX
 export function createElement(
@@ -13,11 +14,10 @@ export function createElement(
   ...children: Child[]
 ): NodeElement {
   return {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: REACT_ELEMENT_SYMBOL,
     type: type,
     props: {
       ...props,
-      // style: 
       children: children.map((child) =>
         typeof child === "object" ? child as NodeElement : createNodeElement(child)
       ),
@@ -28,7 +28,7 @@ export function createElement(
 // FUNCTION THAT GENERATES END NODES
 function createNodeElement(childNode: EndNodeTypes): EndNode {
   return {
-    $$typeof: Symbol.for('react.element'),
+    $$typeof: REACT_ELEMENT_SYMBOL,
     type: "TEXT_NODE",
     props: {
       nodeValue: childNode,

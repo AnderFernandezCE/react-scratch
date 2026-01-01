@@ -1,5 +1,7 @@
 export {};
-import type { NodeElement } from "./types";
+import type { NodeElement } from "./types/ReactTypes";
+import type { StyleObject } from "./types/HTMLStyles";
+
 
 declare global {
   namespace JSX {
@@ -10,7 +12,7 @@ declare global {
         children?: any;
         id?: string;
         className?: string;
-        style?: string | Record<string, string | number>;
+        style?: string | StyleObject;
         [prop: string]: any;
       };
     }
