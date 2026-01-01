@@ -13,9 +13,11 @@ export function createElement(
   ...children: Child[]
 ): NodeElement {
   return {
+    $$typeof: Symbol.for('react.element'),
     type: type,
     props: {
       ...props,
+      // style: 
       children: children.map((child) =>
         typeof child === "object" ? child as NodeElement : createNodeElement(child)
       ),
@@ -26,6 +28,7 @@ export function createElement(
 // FUNCTION THAT GENERATES END NODES
 function createNodeElement(childNode: EndNodeTypes): EndNode {
   return {
+    $$typeof: Symbol.for('react.element'),
     type: "TEXT_NODE",
     props: {
       nodeValue: childNode,

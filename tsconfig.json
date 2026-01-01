@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "jsx": "react-jsx"
+    "jsx": "react",
+    "jsxFactory": "ReactScratch.createElement"
   },
   "include": ["src"]
 }

@@ -1,4 +1,5 @@
 export interface NodeElement {
+  $$typeof: Symbol,
   type: ElementTypes;
   props: {
     children: (NodeElement | EndNode)[];
@@ -8,6 +9,7 @@ export interface NodeElement {
 
 export type EndNodeTypes = string | number | boolean | null | undefined;
 export type EndNode = {
+  $$typeof: Symbol,
   type: "TEXT_NODE",
   props: {
     [key: string]: any;
